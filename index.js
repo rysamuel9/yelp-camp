@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const methodOverried = require('method-override');
 const Campground = require('./models/campground');
 
@@ -17,6 +18,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
+app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverried('_method'));
 
