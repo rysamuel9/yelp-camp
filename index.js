@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const ejsMate = require('ejs-mate');
 const morgan = require('morgan');
 const methodOverried = require('method-override');
 const Campground = require('./models/campground');
@@ -15,12 +16,18 @@ db.once('open', () => {
 
 const app = express();
 
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverried('_method'));
+
+// app.use((req, res, next) => {
+//   console.log('This is my frist middleware');
+//   next();
+// });
 
 app.get('/', (req, res) => {
   res.render('home');
@@ -61,8 +68,8 @@ app.put('/campgrounds/:id', async (req, res) => {
 
 app.delete('/campgrounds/:id', async (req, res) => {
   const { id } = req.params;
-  const campground = await Campground.findByIdAndDelete(id);
-  res.redirect('/campgrounds');
+  await Campground.findByIdAndDelete(id);
+  res.redirect(`/campgrounds`);
 });
 
 app.listen(3000, () => {
